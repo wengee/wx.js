@@ -1,0 +1,28 @@
+{
+  "name": "wx.js",
+  "version": "0.0.1",
+  "description": "Wechat API",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/wengee/wx.js"
+  },
+  "keywords": [
+    "Wechat",
+    "Weixin"
+  ],
+  "author": "Fung Wing Kit",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "query-string": "^4.3.2",
+    "urllib": "^2.21.0"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^3.2.0"
+  }
+}
