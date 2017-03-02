@@ -1,23 +1,13 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _auth_crypto = require('../auth_crypto');
-
-var _auth_crypto2 = _interopRequireDefault(_auth_crypto);
-
-var _index = require('./index');
-
-var _index2 = _interopRequireDefault(_index);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import WXAuthCrypt from '../auth_crypto';
+import ServiceBase from './index';
 
 const SESSION_KEY_URL = 'https://api.weixin.qq.com/sns/jscode2session';
 
-class OAuth extends _index2.default {
-  async getSessionKey(code) {
+class OAuth extends ServiceBase
+{
+  async getSessionKey (code) {
     let data = await this.request('GET', SESSION_KEY_URL, {
       data: {
         appid: this.client.appId,
@@ -34,7 +24,7 @@ class OAuth extends _index2.default {
     return { openId: data.openid, sessionKey: data.session_key };
   }
 
-  async getUserInfo({ code, encryptedData, iv }) {
+  async getUserInfo ({ code, encryptedData, iv }) {
     if (code && this.code != code) {
       await this.getSessionKey(code);
     }
@@ -43,7 +33,7 @@ class OAuth extends _index2.default {
       throw new Error('Illegal session key.');
     }
 
-    let cryptor = new _auth_crypto2.default(this.client.appId, this.sessionKey);
+    let cryptor = new WXAuthCrypt(this.client.appId, this.sessionKey);
     let decryptedData = cryptor.decrypt(encryptedData, iv);
     if (decryptedData.openId !== this.openId) {
       throw new Error('Illegal encryptedData.');
@@ -52,4 +42,4 @@ class OAuth extends _index2.default {
   }
 }
 
-exports.default = OAuth;
+export default OAuth;

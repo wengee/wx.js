@@ -1,10 +1,11 @@
 {
   "name": "wx.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Wechat API",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha test/*.test.js"
+    "build": "./node_modules/.bin/babel src -d lib",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-register test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,10 @@
     "urllib": "^2.21.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-core": "^6.23.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.23.0",
+    "babel-register": "^6.23.0",
     "expect.js": "^0.3.1",
     "mocha": "^3.2.0"
   }

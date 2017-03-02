@@ -1,17 +1,10 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+import ClientBase, { OfficialError } from '../base';
 
-var _base = require('../base');
-
-var _base2 = _interopRequireDefault(_base);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-class Client extends _base2.default {
-  constructor({ appId, appSecret }) {
+class Client extends ClientBase
+{
+  constructor ({ appId, appSecret }) {
     super();
     this.appId = appId;
     this.appSecret = appSecret;
@@ -19,7 +12,7 @@ class Client extends _base2.default {
     this.services = {};
   }
 
-  service(name) {
+  service (name) {
     if (this.services[name]) {
       return this.services[name];
     } else {
@@ -36,4 +29,4 @@ class Client extends _base2.default {
   }
 }
 
-exports.default = Client;
+export default Client;
