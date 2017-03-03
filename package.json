@@ -1,6 +1,6 @@
 {
   "name": "wx.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Wechat API",
   "main": "lib/index.js",
   "scripts": {

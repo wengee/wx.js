@@ -22,6 +22,7 @@ class Client extends ClientBase
     this.keyPath = keyPath;
     this.redis = redis;
 
+    this.compClient = null;
     this._accessToken = accessToken;
     this._ticket = {};
     this.services = {};
@@ -44,6 +45,10 @@ class Client extends ClientBase
 
   setCache (redis) {
     this.redis = redis;
+  }
+
+  setComponent (compClient) {
+    this.compClient = compClient;
   }
 
   async accessToken () {
@@ -69,20 +74,26 @@ class Client extends ClientBase
   }
 
   async getAccessToken () {
-    let data = await this.request('POST', ACCESS_TOKEN_URL, {
-      accessToken: false,
-      query: {
-        grant_type: 'client_credential',
-        appid: this.appId,
-        secret: this.appSecret
-      }
-    });
+    let data;
+    if (this.compClient) {
+      data = this.compClient.service('account').getAuthorizerToken(this.appId, this.refreshToken);
+      return data;
+    } else {
+      data = await this.request('POST', ACCESS_TOKEN_URL, {
+        accessToken: false,
+        query: {
+          grant_type: 'client_credential',
+          appid: this.appId,
+          secret: this.appSecret
+        }
+      });
 
-    return {
-      accessToken: data.access_token,
-      expiresIn: data.expires_in,
-      refreshToken: null
-    };
+      return {
+        accessToken: data.access_token,
+        expiresIn: data.expires_in,
+        refreshToken: null
+      };
+    }
   }
 
   async jsapiSign (url) {
