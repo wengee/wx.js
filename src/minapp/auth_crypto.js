@@ -1,6 +1,6 @@
 'use strict';
 
-import crypto from 'crypto';
+const crypto = require('crypto');
 
 class WXAuthCrypt
 {
@@ -32,4 +32,4 @@ class WXAuthCrypt
   }
 }
 
-export default WXAuthCrypt;
+exports = module.exports = WXAuthCrypt;

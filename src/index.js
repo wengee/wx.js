@@ -1,7 +1,11 @@
 'use strict';
 
-import { OfficialError } from './base';
-import MpClient from './mp';
-import MinappClient from './minapp';
+const OfficialError = require('./official-error');
+const MpClient = require('./mp');
+const MinappClient = require('./minapp');
 
-export { OfficialError, MpClient, MinappClient }
+exports = module.exports = {
+  OfficialError,
+  MpClient,
+  MinappClient
+}

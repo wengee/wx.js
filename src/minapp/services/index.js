@@ -10,4 +10,4 @@ class ServiceBase {
   }
 }
 
-export default ServiceBase;
+exports = module.exports = ServiceBase;

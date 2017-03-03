@@ -1,6 +1,6 @@
 'use strict';
 
-import ServiceBase from './index';
+const ServiceBase = require('./index');
 
 const AUTHORIZE_URL = 'https://open.weixin.qq.com/connect/oauth2/authorize';
 const ACCESS_TOKEN_URL = 'https://api.weixin.qq.com/sns/oauth2/access_token';
@@ -82,4 +82,4 @@ class OAuth extends ServiceBase
   }
 }
 
-export default OAuth;
+exports = module.exports = OAuth;

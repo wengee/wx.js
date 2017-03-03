@@ -1,6 +1,6 @@
 'use strict';
 
-import ServiceBase from './index';
+const ServiceBase = require('./index');
 
 const CREATE_URL = 'https://api.weixin.qq.com/cgi-bin/tags/create';
 const GET_URL = 'https://api.weixin.qq.com/cgi-bin/tags/get';
@@ -98,4 +98,4 @@ class Tag extends ServiceBase
   }
 }
 
-export default Tag;
+exports = module.exports = Tag;

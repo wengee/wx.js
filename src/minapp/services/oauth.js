@@ -1,7 +1,7 @@
 'use strict';
 
-import WXAuthCrypt from '../auth_crypto';
-import ServiceBase from './index';
+const WXAuthCrypt = require('../auth_crypto');
+const ServiceBase = require('./index');
 
 const SESSION_KEY_URL = 'https://api.weixin.qq.com/sns/jscode2session';
 
@@ -42,4 +42,4 @@ class OAuth extends ServiceBase
   }
 }
 
-export default OAuth;
+exports = module.exports = OAuth;

@@ -1,6 +1,6 @@
 'use strict';
 
-import ServiceBase from './index';
+const ServiceBase = require('./index');
 
 const CREATE_URL = 'https://api.weixin.qq.com/cgi-bin/groups/create';
 const GET_URL = 'https://api.weixin.qq.com/cgi-bin/groups/get';
@@ -84,4 +84,4 @@ class Group extends ServiceBase
   }
 }
 
-export default Group;
+exports = module.exports = Group;

@@ -1,6 +1,6 @@
 'use strict';
 
-import ServiceBase from './index';
+const ServiceBase = require('./index');
 
 const REMARK_URL = 'https://api.weixin.qq.com/cgi-bin/user/info/updateremark';
 const USERINFO_URL = 'https://api.weixin.qq.com/cgi-bin/user/info';
@@ -60,4 +60,4 @@ class User extends ServiceBase
   }
 }
 
-export default User;
+exports = module.exports = User;

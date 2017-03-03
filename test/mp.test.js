@@ -1,8 +1,8 @@
 'use strict';
 
-import expect from 'expect.js';
-import { MpClient } from '../lib';
-import config from './config';
+const expect = require('expect.js');
+const { MpClient } = require('../lib');
+const config = require('./config');
 
 const client = new MpClient(config.mp);
 

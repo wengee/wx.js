@@ -1,7 +1,7 @@
 'use strict';
 
-import _ from 'lodash';
-import ServiceBase from './index';
+const _ = require('lodash');
+const ServiceBase = require('./index');
 
 const MESSAGE_URL = 'https://api.weixin.qq.com/cgi-bin/message/custom/send';
 const MSG_TYPES = ['text', 'image', 'voice', 'video', 'music', 'news', 'mpnews', 'wxcard'];
@@ -52,4 +52,4 @@ MSG_TYPES.forEach(value => {
   }
 });
 
-export default Message;
+exports = module.exports = Message;

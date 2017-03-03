@@ -1,7 +1,7 @@
 'use strict';
 
-import crypto from 'crypto';
-import ClientBase, { OfficialError } from '../base';
+const crypto = require('crypto');
+const ClientBase = require('../base');
 
 const ACCESS_TOKEN_URL = 'https://api.weixin.qq.com/cgi-bin/token';
 const TICKET_URL = 'https://api.weixin.qq.com/cgi-bin/ticket/getticket';
@@ -32,7 +32,6 @@ class Client extends ClientBase
       return this.services[name];
     } else {
       let Service = require('./services/' + name);
-      Service = Service.default || Service;
       if (Service) {
         let s = new Service(this);
         this.services[name] = s;
@@ -144,4 +143,4 @@ class Client extends ClientBase
   }
 }
 
-export default Client;
+exports = module.exports = Client;
