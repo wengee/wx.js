@@ -20,7 +20,7 @@ class User extends ServiceBase
     return data.errcode === 0;
   }
 
-  async get (openId, lang = 'zh_CN') {
+  async fetch (openId, lang = 'zh_CN') {
     return await this.request('GET', USERINFO_URL, {
       data: {
         openid: openId,
@@ -29,9 +29,11 @@ class User extends ServiceBase
     });
   }
 
-  async batchGet (users, lang = 'zh_CN') {
+  async batchGet (openIds, lang = 'zh_CN') {
+    if (!Array.isArray(openIds)) return false;
+
     let userList = [];
-    for (let user of users) {
+    openIds.forEach(user => {
       if (Object.prototype.toString.call(user) === '[object Object]') {
         userList.push(user);
       } else {
@@ -40,7 +42,7 @@ class User extends ServiceBase
           lang
         });
       }
-    }
+    })
 
     let data = this.request('POST', BATCHGET_URL, {
       data: {

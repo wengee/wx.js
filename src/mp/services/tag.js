@@ -50,7 +50,7 @@ class Tag extends ServiceBase
     return !data.errcode;
   }
 
-  async get (openId) {
+  async fetch (openId) {
     let data = await this.request('POST', GETID_URL, {
       data: {
         openid: openId

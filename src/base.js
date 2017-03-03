@@ -18,12 +18,18 @@ class ClientBase
       url = url + (url.indexOf('?') === -1 ? '?' : '&') + qs.stringify(options.query);
     }
 
-    let res = await urllib.request(url, {
-      method,
-      data: options.data || {},
-      dataType: options.dataType || 'json',
-      contentType: options.contentType || 'json'
-    });
+    let res;
+    try {
+      res = await urllib.request(url, {
+        method,
+        data: options.data || {},
+        dataType: options.dataType || 'json',
+        contentType: options.contentType || 'json'
+      });
+      assert(res.status === 200, 'Could not connect to api server.');
+    } catch (e) {
+      throw new OfficialError(-1, e.message);
+    }
 
     if (!options.dataType || options.dataType.toUpperCase() === 'JSON') {
       if (res.data && res.data.errcode)
