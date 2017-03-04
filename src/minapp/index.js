@@ -12,19 +12,15 @@ class Client extends ClientBase
     this.services = {};
   }
 
-  service (name) {
-    if (this.services[name]) {
-      return this.services[name];
-    } else {
+  service(name) {
+    if (!this.services[name]) {
       let Service = require('./services/' + name);
       if (Service) {
-        let s = new Service(this);
-        this.services[name] = s;
-        return s;
-      } else {
-        return null;
+        this.services[name] = new Service(this);
       }
     }
+
+    return this.services[name];
   }
 }
 
