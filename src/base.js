@@ -63,17 +63,17 @@ class ClientBase
     return res.data;
   }
 
-  async parseEncrypt (req) {
+  async parseEncrypt(request, rawXml) {
     if (!this.cryptor) {
       throw new Error('Invalid cryptor');
     }
 
-    let signature = req.query.msg_signature;
-    let timestamp = req.query.timestamp;
-    let nonce = req.query.nonce;
+    let signature = request.query.msg_signature;
+    let timestamp = request.query.timestamp;
+    let nonce = request.query.nonce;
 
-    if (req.method === 'GET') {
-      const echostr = req.query.echostr;
+    if (request.method === 'GET') {
+      const echostr = request.query.echostr;
       if (signature !== this.cryptor.getSignature(timestamp, nonce, echostr)) {
         throw new Error('Invalid signature');
       } else {
@@ -81,11 +81,11 @@ class ClientBase
         return result.message;
       }
     } else {
-      if (!req.body) {
+      if (!rawXml) {
         throw new Error('body is empty');
       }
 
-      let data = await xmlParse(req.body);
+      let data = await xmlParse(rawXml);
       let encryptMessage = data.Encrypt;
       if (signature !== this.cryptor.getSignature(timestamp, nonce, encryptMessage)) {
         throw new Error('Invalid signature');
@@ -97,24 +97,40 @@ class ClientBase
         throw new Error('Invalid appid');
       }
 
-      return messageWrapXml;
+      return await xmlParse(messageWrapXml);
     }
   }
 
-  async parseRequest (req) {
-    let rawXml = req.body;
-
-    if (req.query.encrypt_type && req.query.msg_signature) {
-      rawXml = await this.parseEncrypt(req);
-    } else if (!checkSignature(req.query, this.token)) {
+  async parseRequest (request, stream) {
+    if (request.query.encrypt_type && request.query.msg_signature) {
+      return await this.parseEncrypt(request, stream);
+    } else if (!checkSignature(request.query, this.token)) {
       throw new Error('Invalid signature');
     }
 
-    if (req.method === 'GET') {
-      return req.query.echostr;
-    } else if (req.method === 'POST') {
+    if (request.method === 'GET') {
+      return request.query.echostr;
+    } else if (request.method === 'POST') {
+      let rawXml = await this.getMessage(stream);
       return await xmlParse(rawXml);
     }
+  }
+
+  getMessage (stream) {
+    if (!stream) {
+      return null;
+    }
+
+    return new Promise(function (resolve, reject) {
+      let result = '';
+      stream.on('data', (chunk) => {
+        result += Buffer.from(chunk).toString();
+      });
+
+      stream.on('end', () => {
+        resolve(result);
+      });
+    });
   }
 }
 
