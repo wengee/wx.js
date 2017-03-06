@@ -1,11 +1,13 @@
 {
   "name": "wx.js",
-  "version": "0.2.1",
+  "version": "0.2.7",
   "description": "Wechat API",
   "main": "lib/index.js",
   "scripts": {
     "build": "./node_modules/.bin/babel src -d lib",
-    "test": "./node_modules/.bin/mocha --compilers js:babel-register test/*.test.js"
+    "test": "./node_modules/.bin/mocha --compilers js:babel-register test/*.test.js",
+    "pretest": "npm run build",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",

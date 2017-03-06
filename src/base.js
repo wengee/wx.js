@@ -22,6 +22,31 @@ const checkSignature = function (query, token) {
   return shasum.digest('hex') === signature;
 }
 
+const getRawBody = function (stream) {
+  if (!stream) {
+    return null;
+  }
+
+  return new Promise(function (resolve, reject) {
+    let result = '';
+    stream.on('data', (chunk) => {
+      result += Buffer.from(chunk).toString();
+    });
+
+    stream.on('end', () => {
+      resolve(result);
+    });
+  });
+}
+
+const formatMessage = function (message) {
+  let result = {};
+  _.forEach(message, (item, index) => {
+    result[_.camelCase(index)] = item;
+  });
+  return result;
+}
+
 class ClientBase
 {
   get cryptor () {
@@ -63,17 +88,24 @@ class ClientBase
     return res.data;
   }
 
-  async parseEncrypt(request, rawXml) {
+  async setContext (ctx) {
+    if (ctx.request) {
+      this.ctx = ctx;
+      await this.parseMessage(ctx);
+    }
+  }
+
+  async parseEncryptMessage(ctx) {
     if (!this.cryptor) {
       throw new Error('Invalid cryptor');
     }
 
-    let signature = request.query.msg_signature;
-    let timestamp = request.query.timestamp;
-    let nonce = request.query.nonce;
+    let signature = ctx.request.query.msgSignature;
+    let timestamp = ctx.request.query.timestamp;
+    let nonce = ctx.request.query.nonce;
 
-    if (request.method === 'GET') {
-      const echostr = request.query.echostr;
+    if (ctx.request.method === 'GET') {
+      const echostr = ctx.request.query.echostr;
       if (signature !== this.cryptor.getSignature(timestamp, nonce, echostr)) {
         throw new Error('Invalid signature');
       } else {
@@ -81,6 +113,7 @@ class ClientBase
         return result.message;
       }
     } else {
+      let rawXml = getRawBody(ctx.req)
       if (!rawXml) {
         throw new Error('body is empty');
       }
@@ -97,40 +130,29 @@ class ClientBase
         throw new Error('Invalid appid');
       }
 
-      return await xmlParse(messageWrapXml);
+      data = await xmlParse(messageWrapXml);
+      data = formatMessage(data);
+      this.message = data;
+      return data;
     }
   }
 
-  async parseRequest (request, stream) {
-    if (request.query.encrypt_type && request.query.msg_signature) {
-      return await this.parseEncrypt(request, stream);
-    } else if (!checkSignature(request.query, this.token)) {
+  async parseMessage (ctx) {
+    if (ctx.request.query.encrypt_type && ctx.request.query.msg_signature) {
+      return await this.parseEncryptMessage(ctx);
+    } else if (!checkSignature(ctx.request.query, this.token)) {
       throw new Error('Invalid signature');
     }
 
-    if (request.method === 'GET') {
-      return request.query.echostr;
-    } else if (request.method === 'POST') {
-      let rawXml = await this.getMessage(stream);
-      return await xmlParse(rawXml);
+    if (ctx.request.method === 'GET') {
+      return ctx.request.query.echostr;
+    } else if (ctx.request.method === 'POST') {
+      let rawXml = await getRawBody(ctx.req);
+      let data = await xmlParse(rawXml);
+      data = formatMessage(data);
+      this.message = data;
+      return data;
     }
-  }
-
-  getMessage (stream) {
-    if (!stream) {
-      return null;
-    }
-
-    return new Promise(function (resolve, reject) {
-      let result = '';
-      stream.on('data', (chunk) => {
-        result += Buffer.from(chunk).toString();
-      });
-
-      stream.on('end', () => {
-        resolve(result);
-      });
-    });
   }
 }
 
